@@ -41,7 +41,7 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v1
         with:
           image: gcr.io/dicompos/dicomposbackend:latest
-          service: dicomposbackend-prod
+          service: dicompos-backend-prod
           region: asia-southeast2
           platform: managed
           allow-unauthenticated: true
