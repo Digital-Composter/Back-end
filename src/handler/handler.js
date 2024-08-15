@@ -1,10 +1,10 @@
-//handler.js
 const bcrypt = require('bcryptjs');
 const supabase = require("../config/connection");
 const { generateAccessToken } = require("../middleware/jsonwebtoken");
 const getPWMOutput = require("../functions/fuzzyinferencesystem");
 const { response, getDate, calculateAverage, distributeValues } = require("../functions/function");
 
+//non routes function
 async function resetRealtimeExceptLatest(id) {
     // Delete all data from the realtime table
     await supabase
@@ -125,6 +125,7 @@ async function getUser(req, res) {
     }
 }
 
+// Function to get realtime data
 async function getRealtime(req, res) {
     try {
         const { data, error } = await supabase
@@ -143,6 +144,7 @@ async function getRealtime(req, res) {
     }
 }
 
+// Function to insert realtime data
 async function postRealtime(req, res) {
     let id;
     let increment;
@@ -192,6 +194,7 @@ async function postRealtime(req, res) {
     }
 }
 
+// Function to insert records data
 async function postRecords(req, res) {
     let id;
     let increment;
@@ -206,8 +209,8 @@ async function postRecords(req, res) {
             return response(500, null, realtimeError.message, res);
         }
 
-        // Check if there are more than 5 records
-        if (realtimeData.length >= 5) {
+        // Check if there are more than 864 records
+        if (realtimeData.length >= 864) {
             // Calculate average values
             const averageValues = calculateAverage(realtimeData);
 
@@ -264,6 +267,7 @@ async function postRecords(req, res) {
     }
 }
 
+// Function to get records data
 async function getRecords(req, res) {
     try {
         // Fetch content of records table
@@ -282,6 +286,7 @@ async function getRecords(req, res) {
     }
 }
 
+// Function to get control details
 async function getControl(req, res) {
     try {
         const { data, error } = await supabase
@@ -298,6 +303,7 @@ async function getControl(req, res) {
     }
 }
 
+// Function to edit control details
 async function putControlTemp(req, res) {
 
     try {
@@ -327,6 +333,7 @@ async function putControlTemp(req, res) {
     }
 }
 
+// Function to edit control details
 async function putControlMoist(req, res) {
     try {
         const { 
@@ -354,6 +361,7 @@ async function putControlMoist(req, res) {
     }
 }
 
+// Function to activate device
 async function activateDevice(req, res) {
     try {
         const { data: stateData, error: stateError } = await supabase
@@ -389,6 +397,7 @@ async function activateDevice(req, res) {
     }
 }
 
+// Function to deactivate device
 async function deactivateDevice(req, res) {
     try {
         const { data: stateData, error: stateError } = await supabase
@@ -427,6 +436,7 @@ async function deactivateDevice(req, res) {
     }
 }
 
+// Function to get state details
 async function getState(req, res) {
     try {
         const { data, error } = await supabase
@@ -443,6 +453,7 @@ async function getState(req, res) {
     }
 }
 
+// Function to count elapsed days
 async function getDays(req, res) {
     try {
         const { data: stateData, error: stateError } = await supabase
@@ -475,44 +486,7 @@ async function getDays(req, res) {
     }
 }
 
-// async function getMinutes(req, res) {
-//     try {
-//         const { data: stateData, error: stateError } = await supabase
-//             .from('state')
-//             .select('*')
-//             .eq('id', 1);
-
-//         if (stateError) {
-//             return response(500, null, stateError.message, res);
-//         }
-
-//         const { state, date } = stateData[0];
-
-//         // Check if state is 1
-//         if (state !== 1) {
-//             return response(400, null, "State is not active", res);
-//         }
-
-//         const pastDate = new Date(date);
-//         const currentDate = new Date();
-//         const currentDateWithOffset = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
-
-//         console.log("Parsed past date:", pastDate);
-//         console.log("Current date:", currentDateWithOffset);
-
-//         // Calculate the difference in time
-//         const diffTime = Math.abs(currentDateWithOffset - pastDate);
-//         const diffMinutes = Math.floor(diffTime / (1000 * 60));
-
-//         console.log("Difference in time (ms):", diffTime);
-//         console.log("Difference in minutes:", diffMinutes);
-
-//         return response(200, { minutes: diffMinutes }, "Minutes counted", res);
-//     } catch (error) {
-//         return response(500, null, error.message, res);
-//     }
-// }
-
+// Function to calculate fuzzy output
 async function calculateFIS(req, res) {
     const { currentTemperature, targetTemperature } = req.body;
 
@@ -553,6 +527,7 @@ async function calculateFIS(req, res) {
     }
 }
 
+// Function to get fuzzy results
 async function getFuzzy(req, res) {
     try {
         const { data, error } = await supabase
