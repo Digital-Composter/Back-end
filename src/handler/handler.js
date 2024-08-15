@@ -1,10 +1,56 @@
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 const supabase = require("../config/connection");
 const { generateAccessToken } = require("../middleware/jsonwebtoken");
 const getPWMOutput = require("../functions/fuzzyinferencesystem");
 const { response, getDate, calculateAverage, distributeValues } = require("../functions/function");
 
 //non routes function
+async function sendEmail(to, username) {
+    // Create a transporter object using SMTP transport
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER, // Your email address from environment variables
+            pass: process.env.EMAIL_PASS,  // Your email password from environment variables
+        },
+    });
+
+    // Modern and Minimalist HTML Content
+    const htmlContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4; color: #333;">
+            <header style="padding-bottom: 20px; border-bottom: 1px solid #ddd;">
+                <h1 style="font-size: 24px; font-weight: bold; color: #2C3E50; text-align: center;">Dicompos</h1>
+            </header>
+            <main style="padding-top: 20px;">
+                <p style="font-size: 18px; color: #2C3E50;">Dear ${username},</p>
+                <p style="font-size: 16px; line-height: 1.6; color: #555;">
+                    Your compost has reached its maturation phase. Therefore, you're free to stop the composting process.
+                </p>
+            </main>
+            <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;">
+                <p style="font-size: 14px; color: #777;">Best regards,<br>Dicompos</p>
+            </footer>
+        </div>
+    `;
+
+    // Setup email data
+    let mailOptions = {
+        from: `"Dicompos" <${process.env.EMAIL_USER}>`,
+        to: to,
+        subject: 'Your Compost is Done!',
+        html: htmlContent,
+    };
+
+    // Send email with defined transport object
+    try {
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Email sent to %s: %s', username, info.messageId);
+    } catch (error) {
+        console.error('Error sending email to %s: %s', username, error);
+    }
+}
+
 async function resetRealtimeExceptLatest(id) {
     // Delete all data from the realtime table
     await supabase
@@ -148,16 +194,18 @@ async function getRealtime(req, res) {
 async function postRealtime(req, res) {
     let id;
     let increment;
-    
+
     const { 
         temp,
         moist,
         ph,
         temp_ambiance,
         humid_ambiance,
-        phase } = req.body;
+        phase 
+    } = req.body;
 
     try {
+        // Fetch current data from the 'realtime' table
         const { data: realtimeData, error: realtimeError } = await supabase
             .from('realtime')
             .select('*');
@@ -166,14 +214,33 @@ async function postRealtime(req, res) {
             return response(500, null, realtimeError.message, res);
         }
 
-        // Check if there are more than 5 records
+        // Check for "Maturasi" phase in the existing data
+        const maturationData = realtimeData.filter(record => record.phase === 'Maturasi');
+
+        if (maturationData.length === 3) {
+            // Fetch user data from the 'users' table
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('Username, Email');
+
+            if (userError) {
+                console.error('Error fetching user data:', userError.message);
+                return response(500, null, userError.message, res);
+            }
+
+            // Send the email to all users
+            for (const user of userData) {
+                await sendEmail(user.Email, user.Username);
+            }
+        }
+
+        // Prepare to insert new data
         increment = realtimeData.length + 1;
         id = increment;
 
         const { data, error } = await supabase
             .from('realtime')
-            .insert([
-            {
+            .insert([{
                 id,
                 temp,
                 moist,
@@ -181,9 +248,9 @@ async function postRealtime(req, res) {
                 temp_ambiance,
                 humid_ambiance,
                 phase
-            }
-            ])
+            }])
             .select();
+
         if (error) {
             return response(500, null, error.message, res);
         }

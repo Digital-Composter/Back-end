@@ -27,7 +27,7 @@
     "fuzzyis": "^1.0.2",
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.45",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^6.9.14",
     "nodemon": "^3.1.0"
   }
 }
