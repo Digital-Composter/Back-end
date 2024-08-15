@@ -28,7 +28,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: dicompos.telyu/dicompos/dicomposbackend:latest
+          tags: gcr.io/dicompos/dicomposbackend:latest
           build-args: |
             HTTP_PORT=8080
             SUPABASE_URL=${{ secrets.SUPABASE_URL }}
@@ -40,7 +40,7 @@ jobs:
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
         with:
-          image: dicompos.telyu/dicompos/dicomposbackend:latest
+          image: gcr.io/dicompos/dicomposbackend:latest
           service: dicomposbackend-prod
           region: asia-southeast2
           platform: managed
