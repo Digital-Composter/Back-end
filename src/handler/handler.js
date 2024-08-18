@@ -551,6 +551,8 @@ async function getDays(req, res) {
 
 // Function to calculate fuzzy output
 async function calculateFIS(req, res) {
+    let heat, exha;
+
     const { currentTemperature, targetTemperature } = req.body;
 
     try {
@@ -569,13 +571,21 @@ async function calculateFIS(req, res) {
         const h1 = data[0].h1, h2 = data[0].h2, h3 = data[0].h3;
         const vh1 = data[0].vh1, vh2 = data[0].vh2, vh3 = data[0].vh3;
 
-        const [heaterPWM, exhaustPWM] = getPWMOutput(vc1, vc2, vc3, c1, c2, c3, lw1, lw2, lw3, w1, w2, w3, h1, h2, h3, vh1, vh2, vh3, currentTemperature, targetTemperature);
+        if (currentTemperature > targetTemperature){
+            const [exhaustPWM, heaterPWM] = getPWMOutput(vc1, vc2, vc3, c1, c2, c3, lw1, lw2, lw3, w1, w2, w3, h1, h2, h3, vh1, vh2, vh3, currentTemperature, targetTemperature);
+            exha = exhaustPWM;
+            heat = heaterPWM;
+        } else if (currentTemperature < targetTemperature){
+            const [heaterPWM, exhaustPWM] = getPWMOutput(vc1, vc2, vc3, c1, c2, c3, lw1, lw2, lw3, w1, w2, w3, h1, h2, h3, vh1, vh2, vh3, currentTemperature, targetTemperature);
+            heat = heaterPWM;
+            exha = exhaustPWM;
+        }
 
         const { data: fuzzyData, error: fuzzyError } = await supabase
             .from('fuzzy')
             .update({
-                heater_pwm: heaterPWM,
-                exhaust_pwm: exhaustPWM,
+                heater_pwm: heat,
+                exhaust_pwm: exha,
                 updated_at: getDate()
             })
             .eq('id', 1)
