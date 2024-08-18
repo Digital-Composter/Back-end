@@ -14,17 +14,13 @@ function calculateAverage(data) {
     const sum = data.reduce((acc, curr) => ({
         temp: acc.temp + curr.temp,
         moist: acc.moist + curr.moist,
-        ph: acc.ph + curr.ph,
-        temp_ambiance: acc.temp_ambiance + curr.temp_ambiance,
-        humid_ambiance: acc.humid_ambiance + curr.humid_ambiance
-    }), { temp: 0, moist: 0, ph: 0, temp_ambiance: 0, humid_ambiance: 0 });
+        ph: acc.ph + curr.ph
+    }), { temp: 0, moist: 0, ph: 0});
 
     return {
         temp: sum.temp / total,
         moist: sum.moist / total,
-        ph: sum.ph / total,
-        temp_ambiance: sum.temp_ambiance / total,
-        humid_ambiance: sum.humid_ambiance / total
+        ph: sum.ph / total
     };
 }
 

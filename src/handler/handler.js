@@ -199,8 +199,6 @@ async function postRealtime(req, res) {
         temp,
         moist,
         ph,
-        temp_ambiance,
-        humid_ambiance,
         phase 
     } = req.body;
 
@@ -245,8 +243,6 @@ async function postRealtime(req, res) {
                 temp,
                 moist,
                 ph,
-                temp_ambiance,
-                humid_ambiance,
                 phase
             }])
             .select();
@@ -300,8 +296,6 @@ async function postRecords(req, res) {
                     temp: averageValues.temp,
                     moist: averageValues.moist,
                     ph: averageValues.ph,
-                    temp_ambiance: averageValues.temp_ambiance,
-                    humid_ambiance: averageValues.humid_ambiance
                 }
             ])
             .select();
@@ -458,6 +452,8 @@ async function activateDevice(req, res) {
             return response(500, null, error.message, res);
         }
 
+        resetRealtimeTable();
+        resetRecordsTable();
         return response(200, data, "State updated", res);
     } catch (error) {
         return response(500, null, error.message, res);
