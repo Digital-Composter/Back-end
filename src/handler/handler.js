@@ -262,69 +262,77 @@ async function postRecords(req, res) {
     let id;
     let increment;
 
-    try {
-        // Fetch data from realtime table
-        const { data: realtimeData, error: realtimeError } = await supabase
-            .from('realtime')
-            .select('*');
+    const { 
+        log 
+    } = req.body;
 
-        if (realtimeError) {
-            return response(500, null, realtimeError.message, res);
-        }
-
-        // Check if there are more than 864 records
-        if (realtimeData.length >= 864) {
-            // Calculate average values
-            const averageValues = calculateAverage(realtimeData);
-
-            const { data: idData, error: idError } = await supabase
-            .from('records')
-            .select('*');
-
-            if (idError) {
-                return response(500, null, idError.message, res);
+    if (log == "MCU"){
+        try {
+            // Fetch data from realtime table
+            const { data: realtimeData, error: realtimeError } = await supabase
+                .from('realtime')
+                .select('*');
+    
+            if (realtimeError) {
+                return response(500, null, realtimeError.message, res);
             }
-
-            increment = idData.length + 1;
-            id = increment;
-
-            const { data, error } = await supabase
-            .from('records')
-            .insert([
-                {
-                    id,
-                    temp: averageValues.temp,
-                    moist: averageValues.moist,
-                    ph: averageValues.ph,
+    
+            // Check if there are more than 864 records
+            if (realtimeData.length >= 864) {
+                // Calculate average values
+                const averageValues = calculateAverage(realtimeData);
+    
+                const { data: idData, error: idError } = await supabase
+                .from('records')
+                .select('*');
+    
+                if (idError) {
+                    return response(500, null, idError.message, res);
                 }
-            ])
-            .select();
-
-            if (error) {
-                return response(500, null, error.message || "Insert error", res);
+    
+                increment = idData.length + 1;
+                id = increment;
+    
+                const { data, error } = await supabase
+                .from('records')
+                .insert([
+                    {
+                        id,
+                        temp: averageValues.temp,
+                        moist: averageValues.moist,
+                        ph: averageValues.ph,
+                    }
+                ])
+                .select();
+    
+                if (error) {
+                    return response(500, null, error.message || "Insert error", res);
+                }
+    
+                await resetRealtimeExceptLatest(realtimeData.length);
+                const { data: resetData, error: resetError } = await supabase
+                .from('realtime')
+                .update([
+                {
+                    id: 1,
+                }
+                ])
+                .eq('id', realtimeData.length)
+                .select();
+    
+                if (resetError) {
+                    return response(500, null, error.message, res);
+                }
+    
+                return response(200, data, "Data inserted", res);
             }
-
-            await resetRealtimeExceptLatest(realtimeData.length);
-            const { data: resetData, error: resetError } = await supabase
-            .from('realtime')
-            .update([
-            {
-                id: 1,
-            }
-            ])
-            .eq('id', realtimeData.length)
-            .select();
-
-            if (resetError) {
-                return response(500, null, error.message, res);
-            }
-
-            return response(200, data, "Data inserted", res);
+            return response(200, null, "Not enough data", res);
+    
+        } catch (error) {
+            return response(500, null, error.message || "Unknown error", res);
         }
-        return response(200, null, "Not enough data", res);
-
-    } catch (error) {
-        return response(500, null, error.message || "Unknown error", res);
+    } else {
+        return response(400, null, "Log false", res);
     }
 }
 
