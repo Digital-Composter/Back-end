@@ -32,11 +32,11 @@ function getPWMOutput(vc1, vc2, vc3, c1, c2, c3, lw1, lw2, lw3, w1, w2, w3, h1, 
     targetTemp.addTerm(new Term('thermophilic2', 'triangle', [h1, h2, h3]));
     targetTemp.addTerm(new Term('overheat', 'triangle', [vh1, vh2, vh3]));
 
-    heaterPWM.addTerm(new Term('veryLow', 'triangle', [92, 102, 120]));         // 40% PWM
-    heaterPWM.addTerm(new Term('low', 'triangle', [115, 204, 224]));            // 80% PWM
+    heaterPWM.addTerm(new Term('veryLow', 'triangle', [140, 153, 210]));         // 60% PWM
+    heaterPWM.addTerm(new Term('low', 'triangle', [207, 217, 227]));            // 85% PWM
     heaterPWM.addTerm(new Term('medium', 'triangle', [220, 230, 240]));         // 90% PWM
     heaterPWM.addTerm(new Term('high', 'triangle', [232, 242, 252]));           // 95% PWM
-    heaterPWM.addTerm(new Term('veryHigh', 'triangle', [245, 255, 265]));       // 100% PWM    
+    heaterPWM.addTerm(new Term('veryHigh', 'triangle', [245, 255, 265]));       // 100% PWM
 
     exhaustPWM.addTerm(new Term('veryLow', 'triangle', [-5, 0, 5]));             // 0% PWM
     exhaustPWM.addTerm(new Term('low', 'triangle', [15, 26, 37]));               // 10% PWM
