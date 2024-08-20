@@ -38,11 +38,11 @@ function getPWMOutput(vc1, vc2, vc3, c1, c2, c3, lw1, lw2, lw3, w1, w2, w3, h1, 
     heaterPWM.addTerm(new Term('high', 'triangle', [210, 230, 250]));            // 90% PWM
     heaterPWM.addTerm(new Term('veryHigh', 'triangle', [240, 255, 270]));        // 100% PWM
 
-    heaterPWM.addTerm(new Term('veryLow', 'triangle', [-5, 0, 5]));             // 0% PWM
-    heaterPWM.addTerm(new Term('low', 'triangle', [15, 26, 37]));               // 10% PWM
-    heaterPWM.addTerm(new Term('medium', 'triangle', [41, 51, 61]));            // 20% PWM
-    heaterPWM.addTerm(new Term('high', 'triangle', [82, 102, 122]));            // 40% PWM
-    heaterPWM.addTerm(new Term('veryHigh', 'triangle', [184, 204, 224]));       // 80% PWM    
+    exhaustPWM.addTerm(new Term('veryLow', 'triangle', [-5, 0, 5]));             // 0% PWM
+    exhaustPWM.addTerm(new Term('low', 'triangle', [15, 26, 37]));               // 10% PWM
+    exhaustPWM.addTerm(new Term('medium', 'triangle', [41, 51, 61]));            // 20% PWM
+    exhaustPWM.addTerm(new Term('high', 'triangle', [82, 102, 122]));            // 40% PWM
+    exhaustPWM.addTerm(new Term('veryHigh', 'triangle', [184, 204, 224]));       // 80% PWM    
 
     // Define rules for the system (reusing the provided rules)
     system.rules = [
