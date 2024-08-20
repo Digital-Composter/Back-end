@@ -32,17 +32,17 @@ function getPWMOutput(vc1, vc2, vc3, c1, c2, c3, lw1, lw2, lw3, w1, w2, w3, h1, 
     targetTemp.addTerm(new Term('thermophilic2', 'triangle', [h1, h2, h3]));
     targetTemp.addTerm(new Term('overheat', 'triangle', [vh1, vh2, vh3]));
 
-    heaterPWM.addTerm(new Term('veryLow', 'triangle', [-53.125, 0, 53.125]));
-    heaterPWM.addTerm(new Term('low', 'triangle', [10.625, 63.75, 116.875]));
-    heaterPWM.addTerm(new Term('medium', 'triangle', [74.375, 127.5, 180.625]));
-    heaterPWM.addTerm(new Term('high', 'triangle', [138.125, 191.25, 244.375]));
-    heaterPWM.addTerm(new Term('veryHigh', 'triangle', [201.875, 255, 308.125]));
+    heaterPWM.addTerm(new Term('veryLow', 'triangle', [-10, 0, 10]));            // 0% PWM
+    heaterPWM.addTerm(new Term('low', 'triangle', [130, 153, 175]));             // 60% PWM
+    heaterPWM.addTerm(new Term('medium', 'triangle', [180, 204, 228]));          // 80% PWM
+    heaterPWM.addTerm(new Term('high', 'triangle', [210, 230, 250]));            // 90% PWM
+    heaterPWM.addTerm(new Term('veryHigh', 'triangle', [240, 255, 270]));        // 100% PWM
 
-    exhaustPWM.addTerm(new Term('veryLow', 'triangle', [-53.125, 0, 53.125]));
-    exhaustPWM.addTerm(new Term('low', 'triangle', [10.625, 63.75, 116.875]));
-    exhaustPWM.addTerm(new Term('medium', 'triangle', [74.375, 127.5, 180.625]));
-    exhaustPWM.addTerm(new Term('high', 'triangle', [138.125, 191.25, 244.375]));
-    exhaustPWM.addTerm(new Term('veryHigh', 'triangle', [201.875, 255, 308.125]));
+    heaterPWM.addTerm(new Term('veryLow', 'triangle', [-5, 0, 5]));             // 0% PWM
+    heaterPWM.addTerm(new Term('low', 'triangle', [15, 26, 37]));               // 10% PWM
+    heaterPWM.addTerm(new Term('medium', 'triangle', [41, 51, 61]));            // 20% PWM
+    heaterPWM.addTerm(new Term('high', 'triangle', [82, 102, 122]));            // 40% PWM
+    heaterPWM.addTerm(new Term('veryHigh', 'triangle', [184, 204, 224]));       // 80% PWM    
 
     // Define rules for the system (reusing the provided rules)
     system.rules = [
