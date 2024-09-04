@@ -89,4 +89,12 @@ function getPWMOutput(vc1, vc2, vc3, c1, c2, c3, lw1, lw2, lw3, w1, w2, w3, h1, 
     return output;
 }
 
-module.exports = getPWMOutput;
+getPWMOutput(
+    6.667, 15, 23.333,
+    16.667, 25, 33.333,
+    26.667, 35, 43.333,
+    36.667, 45, 53.333,
+    36.667, 55, 63.333,
+    56.667, 65, 73.333,
+    20, 35
+)

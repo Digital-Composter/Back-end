@@ -5,8 +5,8 @@ async function sendEmail(to, username) {
     let transporter = nodemailer.createTransport({
         service: 'gmail', // You can use any email service like 'hotmail', 'yahoo', etc.
         auth: {
-            user: process.env.EMAIL_USER, // Your email address from environment variables
-            pass: process.env.EMAIL_PASS,  // Your email password from environment variables
+            user: "dicompostelkomuniversity@gmail.com", // Your email address from environment variables
+            pass: "pftg swuh wvyo yktx",  // Your email password from environment variables
         },
     });
 
@@ -46,4 +46,4 @@ async function sendEmail(to, username) {
 }
 
 // Usage
-sendEmail('hiskandaryapis@gmail.com', 'Hari');
+sendEmail('gamaradimas@gmail.com', 'Dimas');
